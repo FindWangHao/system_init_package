@@ -1,0 +1,3 @@
+export MOONSHOT_API_KEY=sk-tM7KvOhZaP3uW1pdtbmVUfmOQBwOQQVdZcxa0svefcOE2pVt
+export API_KEY=sk-tM7KvOhZaP3uW1pdtbmVUfmOQBwOQQVdZcxa0svefcOE2pVt
+
