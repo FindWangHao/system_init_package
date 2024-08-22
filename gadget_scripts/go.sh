@@ -40,24 +40,3 @@ adcl() {
   fi
 }
 
-# 主循环
-while true; do
-  read -p "> " command
-  case $command in
-    go*)
-      go "${command:3}"
-      ;;
-    adir*)
-      adir "${command:4}"
-      ;;
-    adls)
-      adls
-      ;;
-    adcl*)
-      adcl "${command:4}"
-      ;;
-    exit)
-      break
-      ;;
-  esac
-done
