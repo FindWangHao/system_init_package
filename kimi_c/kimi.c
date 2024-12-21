@@ -36,7 +36,7 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s) {
   return size * nmemb;
 }
 
-// 定义结构体来存储解析后的数据
+// Define a structure to store the parsed data
 typedef struct {
     char id[50];
     char object[50];
@@ -44,40 +44,35 @@ typedef struct {
     char model[50];
     int index;
     char role[50];
-    char *content;  // 动态分配内存
+    char *content;  // Dynamically allocate memory
     char finish_reason[50];
     int prompt_tokens;
     int completion_tokens;
     int total_tokens;
 } ChatCompletion;
 
-// 解析JSON字符串并存储到结构体中
+// Parse the JSON string and store it in the structure
 void parse_json(ChatCompletion* chatCompletion, const char *json_str) {
-    // 解析JSON字符串
     cJSON *json = cJSON_Parse(json_str);
     if (json == NULL) {
         printf("Error parsing JSON\n");
         exit(1);
     }
-    // 提取并存储字段值
     cJSON *id = cJSON_GetObjectItemCaseSensitive(json, "id");
     cJSON *object = cJSON_GetObjectItemCaseSensitive(json, "object");
     cJSON *created = cJSON_GetObjectItemCaseSensitive(json, "created");
     cJSON *model = cJSON_GetObjectItemCaseSensitive(json, "model");
     cJSON *choices = cJSON_GetObjectItemCaseSensitive(json, "choices");
     cJSON *usage = cJSON_GetObjectItemCaseSensitive(json, "usage");
-    // 提取choices数组中的内容
     cJSON *choice = cJSON_GetArrayItem(choices, 0);
     cJSON *message = cJSON_GetObjectItemCaseSensitive(choice, "message");
     cJSON *index = cJSON_GetObjectItemCaseSensitive(choice, "index");
     cJSON *role = cJSON_GetObjectItemCaseSensitive(message, "role");
     cJSON *content = cJSON_GetObjectItemCaseSensitive(message, "content");
     cJSON *finish_reason = cJSON_GetObjectItemCaseSensitive(choice, "finish_reason");
-    // 提取usage中的内容
     cJSON *prompt_tokens = cJSON_GetObjectItemCaseSensitive(usage, "prompt_tokens");
     cJSON *completion_tokens = cJSON_GetObjectItemCaseSensitive(usage, "completion_tokens");
     cJSON *total_tokens = cJSON_GetObjectItemCaseSensitive(usage, "total_tokens");
-    // 复制字段值到结构体
     strcpy(chatCompletion->id, id->valuestring);
     strcpy(chatCompletion->object, object->valuestring);
     chatCompletion->created = created->valueint;
@@ -85,7 +80,6 @@ void parse_json(ChatCompletion* chatCompletion, const char *json_str) {
     chatCompletion->index = index->valueint;
     strcpy(chatCompletion->role, role->valuestring);
 
-    // 动态分配内存并复制内容
     chatCompletion->content = malloc(strlen(content->valuestring) + 1);
     if (chatCompletion->content == NULL) {
         fprintf(stderr, "malloc() failed\n");
@@ -98,13 +92,12 @@ void parse_json(ChatCompletion* chatCompletion, const char *json_str) {
     chatCompletion->completion_tokens = completion_tokens->valueint;
     chatCompletion->total_tokens = total_tokens->valueint;
 
-    // 释放JSON对象
     cJSON_Delete(json);
 }
 
 void content_print(ChatCompletion* chatCompletion){
-    printf("本次回答一共耗费tokens：%d\n", chatCompletion->total_tokens);
-    printf("答: %s\n", chatCompletion->content);
+    printf("The total number of tokens consumed for this response: %d\n", chatCompletion->total_tokens);
+    printf("Answer: %s\n", chatCompletion->content);
 }
 
 typedef struct {
@@ -169,7 +162,7 @@ int main(void) {
     init_message_history(&history);
 
     // Add initial system message
-    add_message(&history, "system", "你是 Kimi，由 Moonshot AI 提供的人工智能助手。我和你的对话可能是英文、中文或拼音。");
+    add_message(&history, "system", "You are Kimi, an AI assistant provided by Moonshot AI. Our conversation can be in English, or Pinyin.");
 
     ChatCompletion chatCompletion;
     chatCompletion.content = NULL;
@@ -196,8 +189,8 @@ int main(void) {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
 
         while (1) {
-            char user_input[256];
-            printf("请输入你的问题 (输入 'exit' 退出): ");
+            char user_input[1024];
+            printf("Your question('exit'): ");
             fgets(user_input, sizeof(user_input), stdin);
 
             size_t len = strlen(user_input);
