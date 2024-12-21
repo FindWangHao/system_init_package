@@ -1,18 +1,18 @@
 #!/bin/bash
-# 存储路径的数组
+#Array of Storage Paths
 declare -A paths
-# go命令
+# go command
 go() {
   local parameter=$1
   local path=${paths[$parameter]}
 
   if [[ -n $path ]]; then
-    cd "$path" || echo "无法跳转到路径: $path"
+    cd "$path" || echo "Unable to jump to path: $path"
   else
-    echo "未找到参数: $parameter"
+    echo "Parameter not found: $parameter"
   fi
 }
-# adir命令
+# adir command
 adir() {
   local parameter=$1
   local path=$2
@@ -20,23 +20,23 @@ adir() {
     path=$(pwd)
   fi
   paths[$parameter]="$path"
-  echo "路径已添加: $parameter -> $path"
+  echo "Path add: $parameter -> $path"
 }
-# adls命令
+# adls command
 adls() {
-  echo "已添加的路径:"
+  echo "Path added:"
   for key in "${!paths[@]}"; do
     echo "$key -> ${paths[$key]}"
   done
 }
-# adcl命令
+# adcl command
 adcl() {
   local parameter=$1
   if [[ -n ${paths[$parameter]} ]]; then
     unset paths[$parameter]
-    echo "路径已删除: $parameter"
+    echo "Path deleted: $parameter"
   else
-    echo "未找到参数: $parameter"
+    echo "Parameter not found: $parameter"
   fi
 }
 
